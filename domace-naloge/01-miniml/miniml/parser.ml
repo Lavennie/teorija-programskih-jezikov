@@ -70,6 +70,7 @@ let ident =
   many (alpha || digit || exactly '\'') >>= fun chrs ->
   return (Syntax.Ident (implode (chr :: chrs)))
 
+(* IF, LAMBDA, LET *)
 let rec exp3 chrs =
   let if_then_else =
     word "IF" >> spaces1 >> exp3 >>= fun e ->
@@ -96,10 +97,24 @@ let rec exp3 chrs =
     spaces >> word "=" >> spaces >> exp3 >>= fun e1 ->
     spaces1 >> word "IN" >> spaces1 >> exp3 >>= fun e2 ->
     return (Syntax.let_rec_in (f, x, e1, e2))
+  and match_expr =
+    word "MATCH" >> spaces1 >> exp3 >>= fun e ->
+    spaces1 >> word "WITH" >> spaces >>
+    word "|" >> spaces >>
+    word "[" >> spaces >> word "]" >>
+    spaces >> word "->" >> spaces >> exp3 >>= fun e_nil ->
+    spaces >> word "|" >> spaces >>
+    ident >>= fun x ->
+    spaces >> word "::" >> spaces >>
+    ident >>= fun xs ->
+    spaces >> word "->" >> spaces >> exp3 >>= fun e_cons ->
+    return (Syntax.Match (e, e_nil, x, xs, e_cons))
   in
-  one_of [ if_then_else; lambda; rec_lambda; let_in; let_rec_in; exp2 ] chrs
+  one_of [ if_then_else; lambda; rec_lambda; let_in; let_rec_in; match_expr; exp2  ] chrs
 
+(* BINARY OPERATORS *)
 and exp2 chrs =
+  print_endline (String.of_seq (List.to_seq chrs));
   one_of
     [
       binop exp1 "*" exp2 (fun e1 e2 -> Syntax.Times (e1, e2));
@@ -108,10 +123,12 @@ and exp2 chrs =
       binop exp1 "=" exp2 (fun e1 e2 -> Syntax.Equal (e1, e2));
       binop exp1 "<" exp2 (fun e1 e2 -> Syntax.Less (e1, e2));
       binop exp1 ">" exp2 (fun e1 e2 -> Syntax.Greater (e1, e2));
+      binop exp1 "::" exp2 (fun e1 e2 -> Syntax.Cons (e1, e2));
       exp1;
     ]
     chrs
 
+(* APPLICATION *)
 and exp1 chrs =
   let apply =
     exp0 >>= fun e ->
@@ -120,9 +137,26 @@ and exp1 chrs =
   in
   one_of [ apply; exp0 ] chrs
 
+(* VALUES - ATOMS *)
 and exp0 chrs =
+  let pair =
+    word "{" >> spaces >> exp3 >>= fun e1 ->
+    spaces >> word "," >> spaces >> exp3 >>= fun e2 ->
+    spaces >> word "}" >>
+    return (Syntax.Pair (e1, e2))
+  and first =
+    word "FST" >> spaces1 >> exp0 >>= fun e ->
+    return (Syntax.Fst e)
+  and second =
+    word "SND" >> spaces1 >> exp0 >>= fun e ->
+    return (Syntax.Snd e)
+  in
   one_of
     [
+      pair;
+      first;
+      second;
+      word "[" >> spaces >> word "]" >> return (Syntax.Nil);
       (integer >>= fun n -> return (Syntax.Int n));
       word "TRUE" >> return (Syntax.Bool true);
       word "FALSE" >> return (Syntax.Bool false);
