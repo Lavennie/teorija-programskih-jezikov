@@ -114,7 +114,6 @@ let rec exp3 chrs =
 
 (* BINARY OPERATORS *)
 and exp2 chrs =
-  print_endline (String.of_seq (List.to_seq chrs));
   one_of
     [
       binop exp1 "*" exp2 (fun e1 e2 -> Syntax.Times (e1, e2));

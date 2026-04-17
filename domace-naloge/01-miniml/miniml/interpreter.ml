@@ -50,8 +50,7 @@ let rec eval_exp = function
     let v = eval_exp e in
     (match v with
      | S.Nil -> eval_exp e1
-     | S.Cons (h, t) ->
-         eval_exp (S.subst_exp [ (x, h); (xs, t) ] e2)
+     | S.Cons (h, t) -> eval_exp (S.subst_exp [ (x, h); (xs, t) ] e2)
      | _ -> failwith "List expected")
 
 
@@ -90,10 +89,7 @@ let rec step = function
   | S.IfThenElse (S.Bool b, e1, e2) -> if b then e1 else e2
   | S.IfThenElse (e, e1, e2) -> S.IfThenElse (step e, e1, e2)
   | S.Apply (S.Lambda (x, e), v) when is_value v -> S.subst_exp [ (x, v) ] e
-  | S.Apply ((S.RecLambda (f, x, e) as rec_f), v) when is_value v ->
-      print_endline ("AAAA " ^ S.string_of_exp3 rec_f);
-      print_endline ("AAAA " ^ S.string_of_ident x ^ "    " ^ S.string_of_exp3 v);
-      S.subst_exp [ (f, rec_f); (x, v) ] e
+  | S.Apply ((S.RecLambda (f, x, e) as rec_f), v) when is_value v -> S.subst_exp [ (f, rec_f); (x, v) ] e
   | S.Apply (((S.Lambda _ | S.RecLambda _) as f), e) -> S.Apply (f, step e)
   | S.Apply (e1, e2) -> S.Apply (step e1, e2)
   | S.Pair (v1, e2) when is_value v1 -> S.Pair (v1, step e2)
