@@ -131,7 +131,7 @@ Pri ukazih je situacija malenkostno drugačna, saj spreminjajo stanje in s tem t
 
 $$
   \infer{L \vdash b \qquad L \vdash c_1, L_1 \qquad L \vdash c_2, L_2}{L \vdash \ifthenelse{b}{c_1}{c_2}, L_1 \cap L_2} \qquad
-  \infer{L \vdash b \qquad L \vdash c, L'}{L \vdash \whiledo{b}{c}, L'} \\[2em]
+  \infer{L \vdash b \qquad L \vdash c, L'}{L \vdash \whiledo{b}{c}, L} \\[2em]
   \infer{L \vdash c_1, L' \qquad L' \vdash c_2, L''}{L \vdash (c_1 ; c_2), L''} \qquad
   \infer{L \vdash e}{L \vdash \ell := e, L \cup \{ \ell \}} \qquad
   \infer{}{L \vdash \skip, L}
@@ -177,7 +177,7 @@ Vsak del dokažemo z indukcijo.
 
   - Podoben dokaz lahko naredimo v primeru $L \vdash \whiledo{b}{c}, L'$.
 
-  - Če smo uporabili pravilo $\infer{L \vdash c_1, L' \qquad L' \vdash c_2, L''}{L \vdash (c_1 ; c_2), L''}$, po indukcijski predpostavki za $L \vdash c_1$ velja:
+  - Če smo uporabili pravilo $\infer{L \vdash c_1, L' \qquad L' \vdash c_2, L''}{L \vdash (c_1 ; c_2), L''}$, po indukcijski predpostavki za $L \vdash c_1, L'$ velja:
 
     1. bodisi obstajata ukaz $c_1'$ in stanje $s'$, da velja $s, c_1 \leadsto s', c_1'$, zaradi česar velja tudi $s, (c_1; c_2) \leadsto s', (c_1'; c_2)$,
     2. bodisi je $c_1 = \skip$, zaradi česar velja $s, (\skip; c_2) \leadsto s, c_2$.
@@ -190,7 +190,7 @@ Vsak del dokažemo z indukcijo.
 
 Opazimo lahko, da v dokazu napredka za ukaze ne uporabimo druge množice lokacij $L'$. Ta pride v poštev, če želimo narediti več kot en korak.
 
-### Varnost
+### Ohranitev
 
 Vzemimo ukaza $c, c'$, množici lokacij $L, L'$ ter stanji $s, s'$, tako da:
 

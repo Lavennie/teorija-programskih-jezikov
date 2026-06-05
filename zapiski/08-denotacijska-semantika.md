@@ -128,7 +128,7 @@ V dokazu bomo uporabili lemo o substituciji, ki jo dokažemo z rutinsko indukcij
 **Lema.** Za izraza $\Gamma, x : A \vdash M : B$ in $\Gamma \vdash N : A$ velja
 
 $$
-  \itp{\Gamma \vdash M[N / x] : B}(\gamma) = \itp{M}(\gamma, \itp{N}(\gamma))
+  \itp{\Gamma \vdash M[N / x] : B}(\gamma) = \itp{\Gamma, x : A \vdash M}(\gamma, \itp{N}(\gamma))
 $$
 
 **Dokaz.** Dokaz poteka z indukcijo na $M \leadsto M'$. Za primer si oglejmo pravilo

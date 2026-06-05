@@ -6,10 +6,17 @@ repository:
   branch: zapiski
 launch_buttons:
   binderhub_url: 'https://mybinder.org'
+# execute:
+#   execute_notebooks: off
 sphinx:
   config:
-    mathjax_config:
+    mathjax_path: ./mathjax/es5/tex-mml-chtml.js
+    mathjax3_config:
+      loader:
+        load: ['[tex]/ams']
       tex:
+        packages:
+          '[+]' : ['ams']
         macros:
           "intsym": ["\\underline{#1}", 1]
           "kwd": ["\\mathbf{#1}", 1]
@@ -42,4 +49,4 @@ sphinx:
           "bind": "\\mathop{>\\!\\!\\!>\\!\\!\\!=}"
           "just": "\\kwdpre{Just}"
           "nothing": "\\kwdpre{Nothing}"
-
+          "op": "\\mathrm{op}"

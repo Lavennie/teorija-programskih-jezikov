@@ -6,39 +6,42 @@ parts:
   - file: 01-praksa-programskih-jezikov.md
     sections:
     - file: 01-praksa-programskih-jezikov-vaje.md
-  - file: 03-indukcija.md
+  - file: 02-indukcija.md
     sections:
-    - file: 03-indukcija-vaje.md
+    - file: 02-indukcija-vaje.md
 - caption: Metateorija
   chapters:
-  - file: 04-metateorija-programskih-jezikov.md
+  - file: 03-metateorija-programskih-jezikov.md
     sections:
-    - file: 04-metateorija-programskih-jezikov-vaje.md
-  - file: 05-lambda-racun.md
+    - file: 03-metateorija-programskih-jezikov-vaje.md
+  - file: 04-lambda-racun.md
     sections:
-    - file: 05-lambda-racun-vaje.md
-  - file: 06-tipi.md
+    - file: 04-lambda-racun-vaje.md
+  - file: 05-tipi.md
     sections:
-    - file: 06-tipi-vaje.md
-  - file: 07-izpeljava-tipov.md
-    sections:
-    - file: 07-izpeljava-tipov-vaje.md
+    - file: 05-tipi-vaje.md
 - caption: Denotacijska semantika
   chapters:
-  - file: 10-denotacijska-semantika.md
+  - file: 08-denotacijska-semantika.md
     sections:
-    - file: 10-denotacijska-semantika-vaje.md
-  - file: 11-domene.md
+    - file: 08-denotacijska-semantika-vaje.md
+  - file: 09-domene.md
     sections:
-    - file: 11-domene-vaje.md
+    - file: 09-domene-vaje.md
 - caption: Učinki
   chapters:
-  - file: 08-racunski-ucinki.md
+  - file: 10-racunski-ucinki.md
     sections:
-    - file: 08-racunski-ucinki-vaje.md
-  - file: 12-monade.md
+    - file: 10-racunski-ucinki-vaje.md
+  - file: 11-monade.md
     sections:
-    - file: 12-monade-vaje.md
+    - file: 11-monade-vaje.md
+  - file: 12-algebrajski-ucinki.md
   - file: 13-prestrezniki-ucinkov.md
     sections:
     - file: 13-prestrezniki-ucinkov-vaje.md
+- caption: Dodatek
+  chapters:
+  - file: 0A-izpeljava-tipov.md
+    sections:
+    - file: 0A-izpeljava-tipov-vaje.md

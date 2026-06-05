@@ -126,3 +126,84 @@ $$\begin{align*}
     \mathrm{update} &: L \times \mathbb{Z} \to 1 \\
     \mathrm{update}(\ell, n) &= s \mapsto ((), s[\ell \mapsto n])
 \end{align*}$$
+
+## Semantika programskega jezika
+
+Opremljeni z monado $(T, \eta, \bind)$, ki opisuje učinke, ki jih želimo zajeti, lahko podamo semantiko programskega jezika. Spomnimo se, da je drobnozrnati neučakani λ-račun podan s sintakso:
+
+$$
+    \begin{align*}
+    \text{vrednost } V &::= x
+        \mid \true
+        \mid \false
+        \mid \intsym{n}
+        \mid \lambda x. M \\
+    \text{izračun } M, N &::=
+        \return V
+        \mid \letin{x = M} N
+        \mid \ifthenelse{V}{M_1}{M_2} \\
+        &\mid V_1 + V_2
+        \mid V_1 * V_2
+        \mid V_1 < V_2
+        \mid V_1 \, V_2
+\end{align*}
+$$
+
+Tedaj bomo tipom $A$ priredili množico (čeprav bi zgodbo lahko ponovili tudi za domene) $\itp{A}$, le da moramo upoštevati prisotnost učinke:
+
+$$
+    \begin{align*}
+    \itp{\boolty} &= \mathbb{B} = \{ \ttt, \fff \} \\
+    \itp{\intty} &= \mathbb{Z} \\
+    \itp{A \to B} &= \itp{B}^{T \itp{A}} = \itp{A} \to T \itp{B}
+    \end{align*}
+$$
+
+Funkcijski tip $A \to B$ torej interpretiramo s funkcijami, ki za vsak argumenta iz $\itp{A}$ ustvarijo program, ki vrača vrednosti iz $\itp{B}$, vendar vmes sproža učinke, opisane z monado $T$.
+
+Tako kot prej bomo kontekst, ki vsebuje vrednosti, interpretirali kot
+
+$$
+  \itp{x_1 : A_1, \dots, x_n : A_n} = \itp{A_1} \times \dots \times \itp{A_n},
+$$
+
+vrednosti pa s funkcijami
+
+$$
+  \itp{\Gamma \vdash_v V : A} : \itp{\Gamma} \to \itp{A}.
+$$
+
+Razlika bo pri izračunih, kjer bomo zopet uporabili monado in jih interpretirali s funkcijami:
+
+$$
+  \itp{\Gamma \vdash_c M : A} : \itp{\Gamma} \to T \itp{A}.
+$$
+
+Interpretacije definiramo rekurzivno kot:
+
+$$
+\begin{align*}
+\itp{\Gamma \vdash_v x_i : A_i}(a_1, \dots, a_n) &= a_i \\
+\itp{\Gamma \vdash_v \true : \boolty}(\gamma) &= \ttt \\
+\itp{\Gamma \vdash_v \false : \boolty}(\gamma) &= \fff \\
+\itp{\Gamma \vdash_v \intsym{n} : \intty}(\gamma) &= n \\
+\itp{\Gamma \vdash_v \lambda x. M : A \to B}(\gamma) &= a \mapsto \itp{\Gamma, x : A \vdash_c M : B}(\gamma, a) \\[2em]
+\itp{\Gamma \vdash_c \ifthenelse{V}{M_1}{M_2} : A}(\gamma) &=
+  \begin{cases}
+    \itp{M_1}(\gamma) & \itp{V}(\gamma) = \ttt \\
+    \itp{M_2}(\gamma) & \itp{V}(\gamma) = \fff
+  \end{cases} \\
+\itp{\Gamma \vdash_c V_1 + V_2 : \intty}(\gamma) &= \eta(\itp{V_1}(\gamma) + \itp{V_2}(\gamma)) \\
+\itp{\Gamma \vdash_c V_1 * V_2 : \intty}(\gamma) &= \eta(\itp{V_1}(\gamma) \cdot \itp{V_2}(\gamma)) \\
+\itp{\Gamma \vdash_c V_1 < V_2 : \boolty}(\gamma) &=
+  \begin{cases}
+    \eta(\ttt) & \itp{V_1}(\gamma) < \itp{V_2}(\gamma) \\
+    \eta(\fff) & \text{sicer}
+  \end{cases} \\
+\itp{\Gamma \vdash_c V_1 \, V_2 : B}(\gamma) &= \big(\itp{V_1}(\gamma)\big)\big(\itp{V_2}(\gamma)\big) \\
+\itp{\Gamma \vdash_c \return V : A}(\gamma) &= \eta(\itp{V}(\gamma)) \\
+\itp{\Gamma \vdash_c \letin{x = M} N : A}(\gamma) &= \itp{\Gamma \vdash_c M : B}(\gamma) \bind (a \mapsto \itp{\Gamma, x : B \vdash_c N : A}(\gamma, a))
+\end{align*}
+$$
+
+Opazimo, da aritmetične operacije ne vrnejo le vrednosti, saj so izračuni, zato moramo uporabiti enoto $\eta$, da jih vložimo v $T \itp{A}$. Enota monade $\eta$ je ravno tako naravna interpretacija za izračun $\return V$, veriženje $\bind$ pa za $\letin{x = M} N$.

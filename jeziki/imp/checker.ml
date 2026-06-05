@@ -26,7 +26,7 @@ let rec check_cmd ctx = function
   | Syntax.Skip -> Some ctx
   | Syntax.WhileDo (bexp, c) -> (
       match check_cmd ctx c with
-      | Some ctx' when check_bexp ctx bexp -> Some ctx'
+      | Some _ when check_bexp ctx bexp -> Some ctx
       | _ -> None)
   | Syntax.PrintInt e -> if check_exp ctx e then Some ctx else None
 

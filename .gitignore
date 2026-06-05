@@ -14,3 +14,5 @@ _build
 *.cmo
 
 venv/
+/zapiski/_ext_assets/
+/zapiski/_static/

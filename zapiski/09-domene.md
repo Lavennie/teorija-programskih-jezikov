@@ -20,7 +20,7 @@ $$
     \itp{(\kwdpre{rec} f \, x . f \, x + \intsym{1}) \, \intsym{0}} = \itp{(\kwdpre{rec} f \, x . f \, x + \intsym{1}) \, \intsym{0}} + 1
 $$
 
-kar seveda ni res. V splošnem pa nam enačba pove, da ima (malo preurejeni) $\itp{M}$ vedno fiksno točko. To za množice in preslikave med njimi seveda ne velja. Smo pa fiksne točke že konstruirali v poglavju o indukciji, kjer smo imeli monotono preslikavo na množicah $F$, ki smo jo iterirali na prazni množici $\emptyset$, da smo dobili množico $I = \bigcup_{n = 0}^{\infty} F^i(\emptyset)$, za katero je veljalo $F I = I$. Podoben postopek želimo narediti v splošnem, kar nas pripelje do definicije _domen_.
+kar seveda ni res. V splošnem pa nam enačba pove, da ima (malo preurejeni) $\itp{M}$ vedno fiksno točko. To za množice in preslikave med njimi seveda ne velja. Smo pa fiksne točke že konstruirali v poglavju o indukciji, kjer smo imeli monotono preslikavo $F$ na množicah, ki smo jo iterirali na prazni množici $\emptyset$, da smo dobili množico $I = \bigcup_{n = 0}^{\infty} F^i(\emptyset)$, za katero je veljalo $F I = I$. Podoben postopek želimo narediti v splošnem, kar nas pripelje do definicije _domen_.
 
 ## Domene
 
@@ -166,7 +166,7 @@ $$
     m +_\bot n = m + n \qquad \bot +_\bot n = m +_\bot \bot = \bot +_ \bot \bot = \bot
 $$
 
-in podobno za $\cdot_\bot$ in $<_\bot$. Za vse preslikave moramo še preveriti, da so zvezne. Za primer poglejmo, da je zvezna preslikava $\mathrm{fix} : [D \to D] \to D$. Poleg monotonosti moramo preveriti, da velja $\mathrm{fix} \bigvee_i f_i = \bigvee_i \mathrm{fix} f_i$ za poljubno verigo preslikav $(f_i)_i$. Vemo, da velja $(\mathrm{fix} g) = \bigvee_j g^j(\bot)$, zato lahko izračunamo:
+in podobno za $\cdot_\bot$ in $<_\bot$. Za vse preslikave moramo še preveriti, da so zvezne. Za primer poglejmo, da je preslikava $\mathrm{fix} : [D \to D] \to D$ zvezna. Poleg monotonosti moramo preveriti, da velja $\mathrm{fix} \bigvee_i f_i = \bigvee_i \mathrm{fix} f_i$ za poljubno verigo preslikav $(f_i)_i$. Vemo, da velja $(\mathrm{fix} g) = \bigvee_j g^j(\bot)$, zato lahko izračunamo:
 
 $$
     \begin{align*}

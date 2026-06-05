@@ -1,0 +1,212 @@
+\documentclass[arhiv]{../izpit}
+\usepackage{amssymb}
+\usepackage{fouriernc}
+\usepackage{mathpartir}
+\usepackage{stmaryrd}
+
+\begin{document}
+
+\newcommand{\bnfis}{\mathrel{{:}{:}{=}}}
+\newcommand{\bnfor}{\;\mid\;}
+\newcommand{\fun}[2]{\lambda #1.\, #2}
+\newcommand{\conditional}[3]{\mathtt{if}\;#1\;\mathtt{then}\;#2\;\mathtt{else}\;#3}
+\newcommand{\whileloop}[2]{\mathtt{while}\;#1\;\mathtt{do}\;#2}
+\newcommand{\boolty}{\mathtt{bool}}
+\newcommand{\intty}{\mathtt{int}}
+\newcommand{\unitty}{\mathtt{unit}}
+\newcommand{\tru}{\mathtt{true}}
+\newcommand{\fls}{\mathtt{false}}
+\newcommand{\skp}{\mathtt{skip}}
+\newcommand{\imp}{\textsc{Imp}}
+\newcommand{\fail}{\mathtt{fail}}
+\newcommand{\return}[1]{\mathtt{ret}\;#1}
+\newcommand{\letin}[1]{\mathtt{let}\;#1\;\mathtt{in}\;}
+\newcommand{\alloc}[3]{\mathtt{alloc}\;#1 := #2\;\mathtt{in}\;#3}
+\newcommand{\intsym}[1]{\underline{#1}}
+\makeatletter
+\newcommand{\nadaljevanje}{\dodatek{\newpage\noindent\emph{(\@sloeng{nadaljevanje rešitve \arabic{naloga}. naloge}{continuation of the answer to question \arabic{naloga}})}}}
+\makeatother
+
+\izpit
+  [ucilnica=P02,naloge=-1]{Teorija programskih jezikov: 1. izpit}{4.\ junij 2026}{
+}
+\dodatek{
+  \vspace{\stretch{1}}
+  \begin{itemize}
+    \item \textbf{Ne odpirajte} te pole, dokler ne dobite dovoljenja.
+    \item Zgoraj \textbf{vpišite svoje podatke} in označite \textbf{sedež}.
+    \item Na vidno mesto položite \textbf{dokument s sliko}.
+    \item Preverite, da imate \textbf{telefon izklopljen} in spravljen.
+    \item Čas pisanja je \textbf{180 minut}.
+    \item Doseči je možno \textbf{80 točk}.
+    \item Veliko uspeha!
+  \end{itemize}
+  \vspace{\stretch{3}}
+  \newpage
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{20}]
+
+Drobnozrnatemu neučakanemu $\lambda$-računu dodamo nedeterminizem:
+%
+\[
+  \text{izračun } M, N \bnfis \cdots \bnfor \fail \bnfor M_1 \oplus M_2
+\]
+%
+kjer $\fail$ pomeni neuspešen izračun, $M_1 \oplus M_2$ pa
+nedeterministično izbiro med $M_1$ in $M_2$.
+
+Sistem tipov razširimo s praviloma:
+%
+\begin{mathpar}
+  \infer{\hbox{}}{\Gamma \vdash_c \fail : A} \and
+  \infer{\Gamma \vdash_c M_1 : A \and \Gamma \vdash_c M_2 : A}{\Gamma \vdash_c M_1 \oplus M_2 : A}
+\end{mathpar}
+%
+operacijsko semantiko pa s sintakso rezultatov:
+\[
+  \text{rezultat } R \bnfis \return{V} \bnfor \fail \bnfor R_1 \oplus R_2
+\]
+in relacijo velikih korakov $M \Downarrow R$, podano s pravili:
+%
+\begin{mathpar}
+  \infer{\hbox{}}{\return{V} \Downarrow \return{V}} \and
+  \infer{M[V/x] \Downarrow R}{(\fun{x}{M})\, V \Downarrow R} \and
+  \infer{\hbox{}}{\intsym{n_1} * \intsym{n_2} \Downarrow \return{\intsym{n_1 \cdot n_2}}} \\
+  \infer{\hbox{}}{\fail \Downarrow \fail} \and
+  \infer{M_1 \Downarrow R_1 \qquad M_2 \Downarrow R_2}{M_1 \oplus M_2 \Downarrow R_1 \oplus R_2} \and
+  \infer{M \Downarrow R \qquad R \triangleright x.\, N \Downarrow R'}{\letin{x = M} N \Downarrow R'}
+\end{mathpar}
+%
+kjer pomožna relacija $R \triangleright x.\, N
+\Downarrow R'$ rezultat $R$ veriži v izračunu $N$ z vezano spremenljivko $x$:
+%
+\begin{mathpar}
+  \infer{N[V/x] \Downarrow R'}{\return{V} \triangleright x.\, N \Downarrow R'} \and
+  \infer{\hbox{}}{\fail \triangleright x.\, N \Downarrow \fail} \and
+  \infer{R_1 \triangleright x.\, N \Downarrow R_1' \qquad R_2 \triangleright x.\, N \Downarrow R_2'}{(R_1 \oplus R_2) \triangleright x.\, N \Downarrow R_1' \oplus R_2'}
+\end{mathpar}
+%
+
+\podnaloga[\tocke{10}]
+Zapišite drevo izpeljave za
+\[
+  \vdash_c \letin{x = (\fail \oplus \return{\intsym{3}})} x * \intsym{14} : \intty.
+\]
+
+\podnaloga[\tocke{10}]
+Zapišite drevo izpeljave za
+\[
+  \letin{x = (\fail \oplus \return{\intsym{3}})} x * \intsym{14}
+  \quad\Downarrow\quad
+  \fail \oplus \return{\intsym{42}}.
+\]
+
+\nadaljevanje
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{20}]
+
+\imp{} (brez zanke $\mathtt{while}$) spremenimo tako, da prirejanje
+lahko le spreminja vrednosti na obstoječih lokacijah, nove lokacije pa
+lahko ustvarimo le lokalno z eksplicitnim ukazom:
+%
+\[
+  c \;\bnfis\; \skp \bnfor \ell := e \bnfor c_1 ; c_2 \bnfor \conditional{b}{c_1}{c_2} \bnfor \alloc{\ell}{e}{c}
+\]
+%
+Ukaz $\alloc{\ell}{e}{c}$ neuporabljeno lokacijo $\ell$ nastavi na
+vrednost izraza $e$, izvede ukaz $c$ ter nato lokacijo $\ell$ sprosti.
+Semantiko ukazov podamo z relacijo velikih korakov $s, c \Downarrow
+s'$:
+%
+\begin{mathpar}
+  \infer{\hbox{}}{s, \skp \Downarrow s} \and
+  \infer{s, e \Downarrow n}{s, \ell := e \Downarrow s[\ell \mapsto n]} \and
+  \infer{s, c_1 \Downarrow s' \quad s', c_2 \Downarrow s''}{s, c_1 ; c_2 \Downarrow s''} \\
+  \infer{s, b \Downarrow \tru \quad s, c_1 \Downarrow s'}{s, \conditional{b}{c_1}{c_2} \Downarrow s'} \and
+  \infer{s, b \Downarrow \fls \quad s, c_2 \Downarrow s'}{s, \conditional{b}{c_1}{c_2} \Downarrow s'}
+\end{mathpar}
+
+\podnaloga[\tocke{5}]
+Zapišite še pravilo za operacijsko semantiko ukaza $\alloc{\ell}{e}{c}$.
+
+\podnaloga[\tocke{5}]
+Ker ukazi ne morejo ustvarjati novih lokacij, so pravila za
+preverjanje njihove veljavnosti oblike $L \vdash c$, kjer je $L$
+množica lokacij. Zapišite pravila za vse ukaze, pri čemer lahko
+predpostavite, da relaciji $L \vdash e$ in $L \vdash b$ ostajata
+nespremenjeni.
+
+\podnaloga[\tocke{10}]
+Pišimo $s \models L$, kadar je stanje $s$ natanko na spremenljivkah iz
+množice $L$. Dokažite, da za $L \vdash c$ in za poljubno stanje $s
+\models L$, obstaja stanje $s' \models L$, da velja $s, c \Downarrow
+s'$.
+
+Predpostavite lahko, da za poljubno stanje $s \models L$ za vsak
+$L \vdash e$ obstaja $n \in \mathbb{N}$, da je $s, e \Downarrow n$ in
+podobno za logične izraze.
+
+\nadaljevanje
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{20}]
+
+\newcommand{\botplus}{\mathrel{+_{\!\!\scriptscriptstyle \bot}}}
+
+Naj bo $(D, \le)$ domena z najmanjšim elementom $\bot$. Predikat $P
+\subseteq D$ je \emph{dopusten}, kadar vsebuje $\bot$ in je zaprt za
+supremume naraščajočih verig, torej za vsako naraščajočo verigo $x_0
+\le x_1 \le \cdots$ velja:
+\[
+  \bigl(\forall i.\; x_i \in P\bigr) \implies \Bigl(\bigvee_i x_i\Bigr) \in P.
+\]
+
+\podnaloga[\tocke{10}]
+Naj bo $f : D \to D$ zvezna preslikava in $P$ dopusten predikat.
+Dokažite \emph{Scottovo načelo indukcije}, ki pravi, da iz $\forall x
+\in D.\; (x \in P \Rightarrow f(x) \in P)$ sledi $\mathrm{fix} \, f
+\in P$, kjer je $\mathrm{fix} \, f$ najmanjša fiksna točka preslikave
+$f$.
+
+\podnaloga[\tocke{10}]
+Definirajmo $\Phi : [\mathbb{N}_\bot \to \mathbb{N}_\bot] \to [\mathbb{N}_\bot \to \mathbb{N}_\bot]$ s predpisom:
+\[
+  \Phi(g) = n \mapsto \begin{cases}
+    0       & n = 1 \\
+    n \botplus g(n/2)  & \text{$n$ je sod} \\
+    (n - 1) \botplus g(3n + 1) & \text{$n$ je lih} \\
+    \bot    & \text{sicer} \\
+  \end{cases}
+\]
+Dokažite, da je $(\mathrm{fix} \, \Phi)(n)$ sodo število za vse $n \in
+\mathbb{N}$, za katere velja $(\mathrm{fix} \, \Phi)(n) \neq \bot$.
+Pri tem lahko predpostavite, da je $\Phi$ zvezna.
+
+\nadaljevanje
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\naloga[\tocke{20}]
+
+\newcommand{\TE}{T^{\!E}}
+\newcommand{\bind}[1]{\mathbin{>\!\!\!>\!\!\!=}_{#1}}
+\newcommand{\bindE}[1]{\mathbin{>\!\!\!>\!\!\!=^{\!E}_{#1}}}
+
+Monade v splošnem težko kombiniramo, a vseeno lahko za nekatere monade
+definiramo njihove \emph{transformatorje}, ki iz obstoječe monade
+naredijo novo.
+
+Naj bo $(T, \eta, \bind{})$ poljubna monada in $E$ poljubna neprazna
+množica izjem. Tedaj lahko definiramo $\TE(X) := T(X + E)$.
+Definirajte še ustrezni družini $\eta^E$ in $\bindE{}$, za kateri bo
+$(\TE, \eta^E, \bindE{})$ monada, ter to dokažite.
+
+\nadaljevanje
+
+\end{document}

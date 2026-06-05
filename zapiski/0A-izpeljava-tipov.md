@@ -275,7 +275,7 @@ $$\infer{
     \Gamma \vdash M_1 \, M_2 : \alpha \mid A_1 = A_2 \to \alpha, \eqs_1, \eqs_2
 }$$
 
-Če velja $\sigma \models A_1 = A_2 \to \alpha, \eqs_1, \eqs_2$, potem velja tudi $\sigma \models \eqs_1$ in $\sigma \models \eqs_2$, saj gre za manjšo množico enačb. Po indukcijski predpostavki potem velja $\sigma(\Gamma) \vdash M_1 : \sigma(A_1)$ in $\sigma(\Gamma) \vdash M_2 : \sigma(A_2)$. Hkrati velja $\sigma(A_1) = \sigma(A_2) \to \sigma(\alpha)$, zato velja $\sigma(\Gamma) \vdash M_1 : \sigma(\alpha) \to \sigma(A_2)$, zato lahko uporabimo pravilo za določanje tipa aplikacije, da dobimo
+Če velja $\sigma \models A_1 = A_2 \to \alpha, \eqs_1, \eqs_2$, potem velja tudi $\sigma \models \eqs_1$ in $\sigma \models \eqs_2$, saj gre za manjšo množico enačb. Po indukcijski predpostavki potem velja $\sigma(\Gamma) \vdash M_1 : \sigma(A_1)$ in $\sigma(\Gamma) \vdash M_2 : \sigma(A_2)$. Hkrati velja $\sigma(A_1) = \sigma(A_2) \to \sigma(\alpha)$, zato velja $\sigma(\Gamma) \vdash M_1 : \sigma(A_2) \to \sigma(\alpha)$, zato lahko uporabimo pravilo za določanje tipa aplikacije, da dobimo
 
 $$\infer{
     \sigma(\Gamma) \vdash M_1 : \sigma(A_2) \to \sigma(\alpha) \qquad
